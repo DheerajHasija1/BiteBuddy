@@ -24,8 +24,8 @@ public class AppConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))    
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/admin/**").hasAnyRole("RESTAURANT_OWNER","ADMIN")    
-                .requestMatchers("/api/**").authenticated()    
+                .requestMatchers("/admin/**").hasAnyRole("RESTAURANT_OWNER","ADMIN")    
+                .requestMatchers("/**").authenticated()    
                 .anyRequest().permitAll()    
             )
             .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)    

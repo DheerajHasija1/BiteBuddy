@@ -1,7 +1,5 @@
 package com.example.BiteBuddy.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,19 +14,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IngredientItem {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
     private String name;
-
-    @ManyToOne
-    private IngredientCategory category;
-
-    @JsonIgnore
+    
+    private boolean inStock;
+    
     @ManyToOne
     private Restaurant restaurant;
-
-    private boolean instock=true;
-
+    
+    @ManyToOne
+    private IngredientCategory category;
 }

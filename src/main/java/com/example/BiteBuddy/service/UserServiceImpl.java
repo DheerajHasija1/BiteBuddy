@@ -2,7 +2,6 @@ package com.example.BiteBuddy.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.example.BiteBuddy.config.JwtProvider;
 import com.example.BiteBuddy.entities.User;
 import com.example.BiteBuddy.repository.UserRepository;
@@ -18,8 +17,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByJwtToken(String jwt) throws Exception{
-        
-        String email =jwtProvider.getEmailFromToken(jwt);
+        String email = jwtProvider.getEmailFromToken(jwt);
         User user = findUserByEmail(email);
         return user;
     }
@@ -27,7 +25,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByEmail(String email) throws Exception {
         User user = userRepository.findByEmail(email);
-
         if(user == null) {
             throw new Exception("User not found");
         }

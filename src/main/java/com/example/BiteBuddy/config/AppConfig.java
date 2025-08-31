@@ -3,6 +3,7 @@ package com.example.BiteBuddy.config;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,18 +18,32 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration   
-@EnableWebSecurity  
+@EnableWebSecurity
 public class AppConfig {
+    
+    @Autowired
+    private JwtTokenValidator jwtTokenValidator;
     
     @Bean   
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))    
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/admin/**").hasAnyRole("RESTAURANT_OWNER","ADMIN")    
-                .requestMatchers("/**").authenticated()    
-                .anyRequest().permitAll()    
+                // Public Auth endpoints
+                .requestMatchers("/auth/signup", "/auth/signin").permitAll()
+                // .requestMatchers("/auth/refresh").permitAll()
+                
+                // Admin endpoints
+                .requestMatchers("/admin/**").hasAnyRole("RESTAURANT_OWNER","ADMIN")
+                
+                // Customer endpoints
+                .requestMatchers("/restaurants/**").authenticated()
+                .requestMatchers("/food/**").authenticated()
+                .requestMatchers("orders/**").authenticated()
+                
+                .anyRequest().permitAll()
             )
-            .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)    
+
+            .addFilterBefore(jwtTokenValidator, BasicAuthenticationFilter.class)    
             .csrf(csrf -> csrf.disable())    
             .cors(cors -> cors.configurationSource(corsConfigurationSource()));   
         return http.build();  

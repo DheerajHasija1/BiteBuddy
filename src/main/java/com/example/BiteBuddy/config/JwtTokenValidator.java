@@ -1,50 +1,76 @@
 package com.example.BiteBuddy.config;
 
-import java.io.IOException;
-import java.util.List;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import com.example.BiteBuddy.entities.User;
+import com.example.BiteBuddy.service.UserService;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
 public class JwtTokenValidator extends OncePerRequestFilter {
 
+    @Autowired
+    private JwtProvider jwtProvider;  
+    
+    @Autowired
+    private UserService userService;
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                     HttpServletResponse response, 
-                                     FilterChain filterChain) throws ServletException, IOException {
-       String jwt = request.getHeader(JwtConstant.JWT_HEADER);
-
-       if(jwt != null) {
-           jwt = jwt.substring(7);
-
-           try {
-                var key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
-                Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-
-                String email = String.valueOf(claims.get("email"));
-                String authorities = String.valueOf(claims.get("authorities"));
-
-                List<GrantedAuthority> auth = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, auth);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-           } catch(Exception e) {
-                throw new BadCredentialsException("Invalid JWT token");
-           }
-       }
-       filterChain.doFilter(request, response);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String token = extractJwtFromRequest(request);
+        
+        try {
+            if (StringUtils.hasText(token)) {
+                // Add "Bearer " prefix because JwtProvider expects it
+                String email = jwtProvider.getEmailFromToken("Bearer " + token);
+                
+                if (email != null && !email.equals("null")) {
+                    User user = userService.findUserByEmail(email);
+                    
+                    // Create authorities based on user role
+                    List<GrantedAuthority> authorities = new ArrayList<>();
+                    String roleName = user.getRole().name();
+                    // Remove "ROLE_" prefix if it exists, then add it back
+                    if (roleName.startsWith("ROLE_")) {
+                        authorities.add(new SimpleGrantedAuthority(roleName));
+                    } else {
+                        authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+                    }
+                    
+                    Authentication auth = new UsernamePasswordAuthenticationToken(
+                        email, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("JWT validation failed: " + e.getMessage()); // Debug log
+            SecurityContextHolder.clearContext();
+        }
+        
+        filterChain.doFilter(request, response);
+    }
+    
+    private String extractJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }

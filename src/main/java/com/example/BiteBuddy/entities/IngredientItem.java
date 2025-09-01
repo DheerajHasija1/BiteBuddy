@@ -1,5 +1,6 @@
 package com.example.BiteBuddy.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +22,8 @@ public class IngredientItem {
     
     private String name;
     
-    private boolean inStock;
+    @Column(name = "instock") 
+    private boolean inStock = true;
     
     @ManyToOne
     private Restaurant restaurant;

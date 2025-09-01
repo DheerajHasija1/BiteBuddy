@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.BiteBuddy.entities.Category;
+import com.example.BiteBuddy.entities.Restaurant;
 import com.example.BiteBuddy.entities.User;
 import com.example.BiteBuddy.service.CategoryService;
+import com.example.BiteBuddy.service.RestaurantService;
 import com.example.BiteBuddy.service.UserService;
 
 @RestController
@@ -25,6 +27,9 @@ public class CategoryController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired 
+    private RestaurantService restaurantService;
 
     @PostMapping("/admin")
     public ResponseEntity<Category> createCategory(
@@ -40,7 +45,8 @@ public class CategoryController {
     public ResponseEntity<List<Category>> getRestaurantCategory(
             @RequestHeader("Authorization") String token) throws Exception {
         User user = userService.findUserByJwtToken(token);
-        List<Category> categories = categoryService.findCategoryByRestaurantId(user.getId());
+        Restaurant restaurant=restaurantService.getRestaurantByUserId(user.getId());
+        List<Category> categories = categoryService.findCategoryByRestaurantId(restaurant.getId());
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 }

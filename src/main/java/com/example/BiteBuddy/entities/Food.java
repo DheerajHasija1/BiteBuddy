@@ -1,5 +1,6 @@
 package com.example.BiteBuddy.entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +41,7 @@ public class Food {
     @ManyToMany
     private List<IngredientItem> ingredients = new ArrayList<>();
 
-    private Date createdAt;
+    private LocalDateTime createdAt;
     
     @Column (length =1000)
     @ElementCollection

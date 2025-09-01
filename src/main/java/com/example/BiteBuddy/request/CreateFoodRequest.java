@@ -2,7 +2,6 @@ package com.example.BiteBuddy.request;
 
 import java.util.List;
 
-import com.example.BiteBuddy.entities.Category;
 import com.example.BiteBuddy.entities.IngredientItem;
 
 import lombok.Data;
@@ -13,11 +12,11 @@ public class CreateFoodRequest {
     String description;
     Long price;
 
-    private Category category;
+    private Long categoryId;
     private List<String> images;
 
-    private Long restaurantId;
-    private boolean isVeg;
+    // private Long restaurantId;
+    private boolean isVeg = true;
     private boolean seasonal;
     private List<IngredientItem> ingredientItems;
 }

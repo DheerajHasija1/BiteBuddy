@@ -31,11 +31,11 @@ public class AdminFoodController {
     public ResponseEntity<Food> createFood(@RequestBody CreateFoodRequest request,
                                             @RequestHeader("Authorization") String token) throws Exception {
         User user = userService.findUserByJwtToken(token);
-        Restaurant restaurant = restaurantService.findRestaurantById(request.getRestaurantId());
+        Restaurant restaurant = restaurantService.getRestaurantByUserId(user.getId());
         Food food = foodService.createFood(request, restaurant);
         return new ResponseEntity<>(food, HttpStatus.CREATED);
     }
-
+ 
     @DeleteMapping("/{foodId}")
     public ResponseEntity<MessageResponse> deleteFood(@PathVariable Long foodId,
                                                         @RequestHeader("Authorization") String token) throws Exception {

@@ -1,10 +1,13 @@
 package com.example.BiteBuddy.service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.BiteBuddy.entities.Category;
 import com.example.BiteBuddy.entities.Food;
 import com.example.BiteBuddy.entities.Restaurant;
 import com.example.BiteBuddy.repository.CategoryRepository;
@@ -20,10 +23,15 @@ public class FoodServiceImpl implements FoodService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @Override
-    public Food createFood(CreateFoodRequest request, Restaurant restaurant) {
+    public Food createFood(CreateFoodRequest request, Restaurant restaurant) throws Exception {
+
+        Category category = categoryService.findCategoryById(request.getCategoryId());
        Food food = new Food();
-       food.setCategory(request.getCategory());
+       food.setCategory(category);
        food.setRestaurant(restaurant);
        food.setName(request.getName());
        food.setDescription(request.getDescription());
@@ -31,6 +39,7 @@ public class FoodServiceImpl implements FoodService {
        food.setVegetarian(request.isVeg());
        food.setSeasonal(request.isSeasonal());
        food.setIngredients(request.getIngredientItems()); 
+       food.setCreatedAt(LocalDateTime.now());
 
        Food saveFood = foodRepository.save(food);
        restaurant.getFoods().add(saveFood);

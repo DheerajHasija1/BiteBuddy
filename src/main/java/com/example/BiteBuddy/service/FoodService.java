@@ -8,7 +8,7 @@ import com.example.BiteBuddy.request.CreateFoodRequest;
 
 public interface FoodService {
 
-    public Food createFood(CreateFoodRequest request, Restaurant restaurant);
+    public Food createFood(CreateFoodRequest request, Restaurant restaurant) throws Exception;
 
     void deleteFood(Long foodId) throws Exception;
 

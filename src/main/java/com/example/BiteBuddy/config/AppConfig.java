@@ -30,6 +30,9 @@ public class AppConfig {
             .authorizeHttpRequests(auth -> auth
                 // Public Auth endpoints
                 .requestMatchers("/auth/signup", "/auth/signin").permitAll()
+                .requestMatchers("/food/search").permitAll()
+                .requestMatchers("/food").permitAll()
+
                 // .requestMatchers("/auth/refresh").permitAll()
                 
                 // Admin endpoints
@@ -38,8 +41,8 @@ public class AppConfig {
                 // Customer endpoints
                 .requestMatchers("/restaurants/**").authenticated()
                 .requestMatchers("/food/**").authenticated()
-                .requestMatchers("orders/**").authenticated()
-                
+                .requestMatchers("/orders/**").authenticated()
+
                 .anyRequest().permitAll()
             )
 

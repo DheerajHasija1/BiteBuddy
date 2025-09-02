@@ -104,8 +104,11 @@ public class CartServiceImpl implements CartService {
 
         CartItem item = cartItem.get();
         cart.getItems().remove(item);
-        cartRepository.save(cart);
+        
         cartItemRepository.delete(item);
+
+        cart.setTotalPrice(calculateCartTotal(cart));
+        cartRepository.save(cart);
         return cart;
     }
 

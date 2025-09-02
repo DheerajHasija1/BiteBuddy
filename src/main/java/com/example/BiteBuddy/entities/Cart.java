@@ -29,5 +29,5 @@ public class Cart {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
 
-    private double totalPrice;
+    private Long totalPrice;
 }

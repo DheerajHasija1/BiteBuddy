@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +26,7 @@ public class CartController {
     private CartService cartService;
 
     @PutMapping("/add")
-    public ResponseEntity<CartItem> addItemToCart(AddCartItemRequest request ,
+    public ResponseEntity<CartItem> addItemToCart(@RequestBody AddCartItemRequest request ,
                                                   @RequestHeader("Authorization") String jwt ) throws Exception {
         CartItem item = cartService.addItemToCart(request, jwt);
         return new ResponseEntity<>(item, HttpStatus.OK);

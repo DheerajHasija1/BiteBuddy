@@ -35,11 +35,24 @@ public class CartServiceImpl implements CartService {
         Food food = foodService.findFoodById(request.getFoodId());
 
         Cart cart = cartRepository.findByUserId(user.getId());
+        if (cart == null) {
+            cart = new Cart();
+            cart.setUser(user);
+            cart = cartRepository.save(cart);
+        }
 
         for(CartItem cartItem :cart.getItems()){
             if(cartItem.getFood().equals(food)){
                 int newQuantity = cartItem.getQuantity() + request.getQuantity();
-                return updateCartItemQuantity(cartItem.getId(), newQuantity);
+                CartItem updatedItem = updateCartItemQuantity(cartItem.getId(), newQuantity);
+
+                // UPDATE CART TOTAL AFTER UPDATING QUANTITY
+            cart = cartRepository.findByUserId(user.getId());
+            cart.setTotalPrice(calculateCartTotal(cart));
+            cartRepository.save(cart);
+            
+            return updatedItem;
+
             }
         }
 
@@ -61,13 +74,20 @@ public class CartServiceImpl implements CartService {
         Optional<CartItem> cartItem = cartItemRepository.findById(cartItemId);
 
         if(cartItem.isEmpty()){
-            throw new Exception("Cart item not found");
-        }
-        CartItem item = cartItem.get();
-        item.setQuantity(quantity);
+        throw new Exception("Cart item not found");
+    }
+    CartItem item = cartItem.get();
+    item.setQuantity(quantity);
 
-        item.setTotalPrice(item.getFood().getPrice() * quantity);
-        return cartItemRepository.save(item);
+    item.setTotalPrice(item.getFood().getPrice() * quantity);
+    CartItem savedItem = cartItemRepository.save(item);
+    
+    // ADD THIS: UPDATE CART TOTAL AFTER UPDATING ITEM
+    Cart cart = item.getCart();
+    cart.setTotalPrice(calculateCartTotal(cart));
+    cartRepository.save(cart);
+    
+    return savedItem;
     }
 
     @Override

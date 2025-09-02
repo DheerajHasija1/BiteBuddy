@@ -2,7 +2,6 @@ package com.example.BiteBuddy.entities;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.Column;

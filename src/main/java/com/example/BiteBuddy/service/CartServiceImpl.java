@@ -143,6 +143,7 @@ public class CartServiceImpl implements CartService {
         User user = userService.findUserByJwtToken(jwt);
         Cart cart = cartRepository.findByUserId(user.getId());
         cart.getItems().clear();
+        cart.setTotalPrice(0L);
         return cartRepository.save(cart);
     }
 

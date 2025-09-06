@@ -15,20 +15,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.BiteBuddy.entities.Cart;
 import com.example.BiteBuddy.entities.CartItem;
+import com.example.BiteBuddy.entities.User;
 import com.example.BiteBuddy.request.AddCartItemRequest;
 import com.example.BiteBuddy.service.CartService;
-
+import com.example.BiteBuddy.service.UserService;
+ 
 @RestController
 @RequestMapping("/cart")
 public class CartController {
-    
+    @Autowired
+    private UserService userService;
     @Autowired
     private CartService cartService;
 
     @PutMapping("/add")
     public ResponseEntity<CartItem> addItemToCart(@RequestBody AddCartItemRequest request ,
                                                   @RequestHeader("Authorization") String jwt ) throws Exception {
-        CartItem item = cartService.addItemToCart(request, jwt);
+        User user = userService.findUserByJwtToken(jwt);
+        CartItem item = cartService.addItemToCart(request, user.getId());
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
@@ -43,19 +47,22 @@ public class CartController {
     @DeleteMapping("/{cartItemId}/remove")
     public ResponseEntity<Cart> removeCartItemEntity(@PathVariable Long cartItemId,
                                                            @RequestHeader("Authorization") String jwt) throws Exception {
-        Cart item = cartService.removeItemFromCart(cartItemId, jwt);
+        User user = userService.findUserByJwtToken(jwt);
+        Cart item = cartService.removeItemFromCart(cartItemId, user.getId());
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
     @PutMapping("/clear")
     public ResponseEntity<Cart> clearCart(@RequestHeader("Authorization") String jwt) throws Exception {
-        Cart cart = cartService.clearCart(jwt);
+        User user = userService.findUserByJwtToken(jwt);
+        Cart cart = cartService.clearCart(user.getId());
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @GetMapping()
     public ResponseEntity<Cart> findUserCart(@RequestHeader("Authorization") String jwt) throws Exception {
-        Cart cart = cartService.findCartByUserId(jwt);
+        User user = userService.findUserByJwtToken(jwt);
+        Cart cart = cartService.findCartByUserId(user.getId());
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 

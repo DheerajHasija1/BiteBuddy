@@ -19,7 +19,7 @@ import com.example.BiteBuddy.service.RestaurantService;
 import com.example.BiteBuddy.service.UserService;
 
 @RestController
-@RequestMapping("/categories")  // Added meaningful base path
+@RequestMapping("/categories") 
 public class CategoryController {
     
     @Autowired

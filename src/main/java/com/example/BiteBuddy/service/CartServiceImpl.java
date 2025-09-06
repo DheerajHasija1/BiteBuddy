@@ -29,12 +29,12 @@ public class CartServiceImpl implements CartService {
     private FoodService foodService;
 
     @Override
-    public CartItem addItemToCart(AddCartItemRequest request, String jwt) throws Exception {
-        User user = userService.findUserByJwtToken(jwt);
+    public CartItem addItemToCart(AddCartItemRequest request, Long userId) throws Exception {
+        User user = userService.findUserById(userId); 
 
         Food food = foodService.findFoodById(request.getFoodId());
 
-        Cart cart = cartRepository.findByUserId(user.getId());
+        Cart cart = cartRepository.findByUserId(userId);
         if (cart == null) {
             cart = new Cart();
             cart.setUser(user);
@@ -47,7 +47,7 @@ public class CartServiceImpl implements CartService {
                 CartItem updatedItem = updateCartItemQuantity(cartItem.getId(), newQuantity);
 
                 // UPDATE CART TOTAL AFTER UPDATING QUANTITY
-            cart = cartRepository.findByUserId(user.getId());
+            cart = cartRepository.findByUserId(userId);
             cart.setTotalPrice(calculateCartTotal(cart));
             cartRepository.save(cart);
             
@@ -91,10 +91,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart removeItemFromCart(Long cartItemId, String jwt) throws Exception {
-        User user = userService.findUserByJwtToken(jwt);
-
-        Cart cart = cartRepository.findByUserId(user.getId());
+    public Cart removeItemFromCart(Long cartItemId, Long userId) throws Exception {
+        Cart cart = cartRepository.findByUserId(userId);
 
         Optional<CartItem> cartItem = cartItemRepository.findById(cartItemId);
 
@@ -133,15 +131,18 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart findCartByUserId(String jwt) throws Exception {
-        User user = userService.findUserByJwtToken(jwt);
-        return cartRepository.findByUserId(user.getId());
+    public Cart findCartByUserId(Long userId) throws Exception {
+        Cart cart = cartRepository.findByUserId(userId);
+        if(cart == null) {
+            throw new Exception("Cart not found for user");
+        }
+        cart.setTotalPrice(calculateCartTotal(cart));
+        return cart;
     }
 
     @Override
-    public Cart clearCart(String jwt) throws Exception {
-        User user = userService.findUserByJwtToken(jwt);
-        Cart cart = cartRepository.findByUserId(user.getId());
+    public Cart clearCart(Long userId) throws Exception {
+        Cart cart = cartRepository.findByUserId(userId);
         cart.getItems().clear();
         cart.setTotalPrice(0L);
         return cartRepository.save(cart);

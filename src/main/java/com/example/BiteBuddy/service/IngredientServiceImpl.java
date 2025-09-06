@@ -9,7 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.BiteBuddy.entities.IngredientCategory;
 import com.example.BiteBuddy.entities.IngredientItem;
 import com.example.BiteBuddy.entities.Restaurant;
-import com.example.BiteBuddy.repository.IngredientCategoryRespository;
+import com.example.BiteBuddy.repository.IngredientCategoryRepository;
 import com.example.BiteBuddy.repository.IngredientItemRepository;
 
 @Service
@@ -19,7 +19,7 @@ public class IngredientServiceImpl implements IngredientService {
     private IngredientItemRepository ingredientItemRepository;
 
     @Autowired
-    private IngredientCategoryRespository ingredientCategoryRepository;
+    private IngredientCategoryRepository ingredientCategoryRepository;
 
     @Autowired
     private RestaurantService restaurantService;

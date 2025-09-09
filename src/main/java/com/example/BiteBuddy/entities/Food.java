@@ -13,6 +13,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
 
 @Entity
 @Data
@@ -42,7 +45,8 @@ public class Food {
 
     private LocalDateTime createdAt;
     
-    @Column (length =1000)
-    @ElementCollection
-    private List<String> images;
+    @ElementCollection(fetch = FetchType.EAGER) // ensure images load on GET
+    @CollectionTable(name = "food_images", joinColumns = @JoinColumn(name = "food_id"))
+    @Column(name = "image_url", length = 1000)
+    private List<String> images = new ArrayList<>();
 }

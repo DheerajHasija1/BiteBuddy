@@ -1,6 +1,7 @@
 package com.example.BiteBuddy.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,11 @@ public class FoodServiceImpl implements FoodService {
        food.setSeasonal(request.isSeasonal());
        food.setIngredients(request.getIngredientItems()); 
        food.setCreatedAt(LocalDateTime.now());
+       food.setAvailable(true);
+
+       // set images before save
+       List<String> imgs = request.getImages() != null ? request.getImages() : List.of();
+       food.setImages(new ArrayList<>(imgs));
 
        Food saveFood = foodRepository.save(food);
        restaurant.getFoods().add(saveFood);

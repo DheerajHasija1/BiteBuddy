@@ -56,7 +56,7 @@ public class AppConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOrigins(Arrays.asList(
-            "https://biteBuddy.vercel.app",
+            "https://bite-buddy-frontend-nine.vercel.app/",
             "http://localhost:3000",
             "http://localhost:3001" 
         ));   

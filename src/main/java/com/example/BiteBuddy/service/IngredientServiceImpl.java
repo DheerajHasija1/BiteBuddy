@@ -27,6 +27,12 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public IngredientCategory createIngredientCategory(String name, Long restaurantId) throws Exception {
         Restaurant restaurant = restaurantService.findRestaurantById(restaurantId);
+        if(restaurant == null) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, 
+                "Restaurant not found with id: " + restaurantId
+            );
+        }
         
         IngredientCategory category = new IngredientCategory();
         category.setName(name);
@@ -53,7 +59,22 @@ public class IngredientServiceImpl implements IngredientService {
     public IngredientItem createIngredientItem(String ingredientName, Long restaurantId, Long categoryId) 
             throws Exception {
         Restaurant restaurant = restaurantService.findRestaurantById(restaurantId);
+        // Validate restaurant exists
+        if(restaurant == null) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, 
+                "Restaurant not found with id: " + restaurantId
+            );
+        }
         IngredientCategory category = findIngredientCategoryById(categoryId);
+
+        // validate category belongs to restaurant
+        if(!category.getRestaurant().getId().equals(restaurantId)) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, 
+                "Category does not belong to the specified restaurant"
+            );
+        }
 
         IngredientItem ingredientItem = new IngredientItem();
         ingredientItem.setName(ingredientName);

@@ -104,4 +104,9 @@ public class IngredientServiceImpl implements IngredientService {
         item.setInStock(!item.isInStock());
         return ingredientItemRepository.save(item);
     }
+
+     @Override
+    public List<IngredientItem> getRestaurantIngredients(Long restaurantId) {
+        return ingredientItemRepository.findByRestaurantId(restaurantId);
+    }
 }

@@ -37,7 +37,7 @@ public class Order {
     @ManyToOne
     private Address deliveryAddress;
 
-    @JsonIgnore
+    // @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 

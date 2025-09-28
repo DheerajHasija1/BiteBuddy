@@ -24,4 +24,5 @@ public interface FoodService {
 
     public Food updateAvailabilityStatus(Long foodId) throws Exception;
 
-} 
+    // public FoodResponse mapToFoodResponse(Food food);
+}

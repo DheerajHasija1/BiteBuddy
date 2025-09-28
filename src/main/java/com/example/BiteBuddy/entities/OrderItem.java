@@ -1,6 +1,9 @@
 package com.example.BiteBuddy.entities;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +17,7 @@ public class OrderItem {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     // @JoinColumn(name = "order_id")
     private Order order; 
 

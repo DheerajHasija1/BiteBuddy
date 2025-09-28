@@ -3,6 +3,7 @@ package com.example.BiteBuddy.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ import com.example.BiteBuddy.entities.Restaurant;
 import com.example.BiteBuddy.repository.CategoryRepository;
 import com.example.BiteBuddy.repository.FoodRepository;
 import com.example.BiteBuddy.request.CreateFoodRequest;
+import com.example.BiteBuddy.response.CategoryResponse;
+import com.example.BiteBuddy.response.IngredientItemResponse;
+
 
 @Service
 public class FoodServiceImpl implements FoodService {
@@ -88,9 +92,11 @@ public class FoodServiceImpl implements FoodService {
     private List<Food> filterBySeasonal(List<Food> foods, boolean seasonal) {
        return foods.stream().filter(food -> food.isSeasonal() == seasonal).toList();
     }
-    private List<Food> filterByCategory(List<Food> foods, String foodCategory) {
-       return foods.stream().filter(food -> food.getCategory().equals(foodCategory)).toList();
-    }
+        private List<Food> filterByCategory(List<Food> foods, String foodCategory) {
+            return foods.stream()
+                .filter(food -> food.getCategory().getName().equals(foodCategory))  
+                .toList();
+        }
 
     @Override
     public List<Food> getAllFoods() {
@@ -119,5 +125,28 @@ public class FoodServiceImpl implements FoodService {
         food.setAvailable(!food.isAvailable());
         return foodRepository.save(food);
     }
+
+    // @Override
+    //  public FoodResponse mapToFoodResponse(Food food) {
+    //     return FoodResponse.builder()
+    //             .id(food.getId())
+    //             .name(food.getName())
+    //             .description(food.getDescription())
+    //             .price(food.getPrice())
+    //             .available(food.isAvailable())
+    //             .category(new CategoryResponse(food.getCategory().getId(), food.getCategory().getName()))
+    //             .ingredients(food.getIngredients().stream()
+    //                     .map(item -> new IngredientItemResponse(
+    //                             item.getId(),
+    //                             item.getName(),
+    //                             item.isInStock(),
+    //                             new CategoryResponse(item.getCategory().getId(), item.getCategory().getName())))
+    //                     .collect(Collectors.toList()))
+    //             .createdAt(food.getCreatedAt())
+    //             .images(food.getImages())
+    //             .seasonal(food.isSeasonal())
+    //             .vegetarian(food.isVegetarian())
+    //             .build();
+    // }
     
 }

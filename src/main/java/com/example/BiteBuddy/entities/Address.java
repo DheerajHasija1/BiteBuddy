@@ -1,10 +1,12 @@
 package com.example.BiteBuddy.entities;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
@@ -18,4 +20,9 @@ public class Address {
     private String city;
     private String state;
     private String pincode;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    @JsonIgnore
+    private User user;
 }

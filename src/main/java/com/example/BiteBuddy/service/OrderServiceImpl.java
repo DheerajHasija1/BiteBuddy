@@ -44,6 +44,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(OrderRequest order, Long UserId) throws Exception {
+        if (order.getRestaurantId() == null) {
+        throw new Exception("Restaurant ID cannot be nullllll");
+    }
         User user = userService.findUserById(UserId);
 
         Address deliveryAddress = order.getDeliveryAddress();
@@ -55,6 +58,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Restaurant restaurant = restaurantService.findRestaurantById(order.getRestaurantId());
+        if (restaurant == null) {
+        throw new Exception("Restaurant not found with ID: " + order.getRestaurantId());
+    }
 
         Order newOrder = new Order();
         newOrder.setCustomer(user);

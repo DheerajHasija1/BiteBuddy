@@ -18,4 +18,6 @@ public interface IngredientService  {
     List<IngredientItem> findRestaurantIngredients(Long restaurantId) throws Exception;
 
     IngredientItem updateStock(Long id) throws Exception;
+
+    List<IngredientItem> getRestaurantIngredients(Long restaurantId);
 }

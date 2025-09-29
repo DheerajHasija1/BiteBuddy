@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.BiteBuddy.entities.Order;
 import com.example.BiteBuddy.entities.User;
 import com.example.BiteBuddy.request.OrderRequest;
+import com.example.BiteBuddy.response.PaymentResponse;
 import com.example.BiteBuddy.service.OrderService;
+import com.example.BiteBuddy.service.PaymentService;
 import com.example.BiteBuddy.service.UserService;
 
 @RestController
@@ -25,13 +27,16 @@ public class OrderController {
     private OrderService orderService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private PaymentService paymentService;
 
     @PostMapping("/add")
-    public ResponseEntity<Order> createOrder(@RequestBody OrderRequest request ,
+    public ResponseEntity<PaymentResponse> createOrder(@RequestBody OrderRequest request ,
                                                   @RequestHeader("Authorization") String jwt ) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
         Order order = orderService.createOrder(request, user.getId());
-        return new ResponseEntity<>(order, HttpStatus.CREATED);
+        PaymentResponse response = paymentService.createPaymentLink(order);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/history")
@@ -40,5 +45,6 @@ public class OrderController {
         List<Order> orders = orderService.getUsersOrders(user.getId());
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
-    
+
+
 }

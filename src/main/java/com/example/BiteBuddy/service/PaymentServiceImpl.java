@@ -24,10 +24,10 @@ public class PaymentServiceImpl implements PaymentService {
         SessionCreateParams params = SessionCreateParams.builder()
             .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
             .setMode(SessionCreateParams.Mode.PAYMENT)
-            .setSuccessUrl("https://bitebuddy01.vercel.app/payment/success" + order.getId())
+            .setSuccessUrl("https://bitebuddy01.vercel.app/payment/success/" + order.getId())
             .setCancelUrl("https://bitebuddy01.vercel.app/payment/fail")
             .addLineItem(
-                SessionCreateParams.LineItem.builder()
+                SessionCreateParams.LineItem.builder()  
                     .setQuantity(1L)
                     .setPriceData(
                         SessionCreateParams.LineItem.PriceData.builder()

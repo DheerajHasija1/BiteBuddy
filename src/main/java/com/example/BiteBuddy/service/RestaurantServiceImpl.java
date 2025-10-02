@@ -85,7 +85,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (restaurant == null) {
             throw new Exception("Restaurant not found with id: " + restaurantId);
         }
-        restaurantRepository.delete(restaurant);
+        restaurantRepository.delete(restaurant);    
     }
 
     @Override

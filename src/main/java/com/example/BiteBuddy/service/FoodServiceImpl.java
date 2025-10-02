@@ -33,17 +33,17 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public Food createFood(CreateFoodRequest request, Restaurant restaurant) throws Exception {
 
-        Category category = categoryService.findCategoryById(request.getCategoryId());
+       Category category = categoryService.findCategoryById(request.getCategoryId());
        Food food = new Food();
        food.setCategory(category);
        food.setRestaurant(restaurant);
        food.setName(request.getName());
        food.setDescription(request.getDescription());
        food.setPrice(request.getPrice());
-       food.setVegetarian(request.isVeg());
+       food.setVegetarian(request.isVegetarian());
        food.setSeasonal(request.isSeasonal());
        food.setIngredients(request.getIngredientItems()); 
-       food.setCreatedAt(LocalDateTime.now());
+       food.setCreatedAt(LocalDateTime.now());  
        food.setAvailable(true);
 
        // set images before save
@@ -66,37 +66,43 @@ public class FoodServiceImpl implements FoodService {
     public List<Food> getRestaurantFoods(Long restaurantId, boolean isVeg, boolean seasonal, String foodCategory)
             throws Exception {
        List<Food> foods = foodRepository.findByRestaurantId(restaurantId);
-       if(isVeg){
-            foods = filterByVegetarian(foods,isVeg);
-       }
-       if(!isVeg){
-            foods = filterByNonVegetarian(foods,isVeg);
-       }
-       if(seasonal){
-           foods = filterBySeasonal(foods,seasonal);
-       }
-       if(foodCategory != null && !foodCategory.isEmpty()){
-           foods = filterByCategory(foods,foodCategory);
-       }
+        
+        // Filter by category first if specified
+        if(foodCategory != null && !foodCategory.isEmpty()){
+            foods = filterByCategory(foods, foodCategory);
+        }
+        
+        foods = filterByVegetarian(foods, isVeg);
+        
+        if(seasonal){
+            foods = filterBySeasonal(foods, seasonal);
+        }
 
-       return foods;
-
+        return foods;
     }
 
     private List<Food> filterByVegetarian(List<Food> foods, boolean isVeg) {
-       return foods.stream().filter(food -> food.isVegetarian() == isVeg).toList();
-    }
-    private List<Food> filterByNonVegetarian(List<Food> foods, boolean isVeg) {
-      return foods.stream().filter(food -> food.isVegetarian() != isVeg).toList();
-    }
-    private List<Food> filterBySeasonal(List<Food> foods, boolean seasonal) {
-       return foods.stream().filter(food -> food.isSeasonal() == seasonal).toList();
-    }
-        private List<Food> filterByCategory(List<Food> foods, String foodCategory) {
-            return foods.stream()
-                .filter(food -> food.getCategory().getName().equals(foodCategory))  
+        return foods.stream()
+                .filter(food -> food.isVegetarian() == isVeg)
                 .toList();
-        }
+    }
+
+    private List<Food> filterBySeasonal(List<Food> foods, boolean seasonal) {
+        return foods.stream()
+                .filter(food -> food.isSeasonal() == seasonal)
+                .toList();
+    }
+    
+    private List<Food> filterByCategory(List<Food> foods, String foodCategory) {
+        return foods.stream()
+                .filter(food -> {
+                    if (food.getCategory() != null) {
+                        return food.getCategory().getName().equalsIgnoreCase(foodCategory);
+                    }
+                    return false;
+                })
+                .toList();
+    }
 
     @Override
     public List<Food> getAllFoods() {

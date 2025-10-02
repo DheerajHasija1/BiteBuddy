@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -34,6 +36,7 @@ public class Food {
     private Category category;  
 
     @ManyToOne
+    @JsonIgnore
     private Restaurant restaurant;
 
     private boolean isVegetarian;

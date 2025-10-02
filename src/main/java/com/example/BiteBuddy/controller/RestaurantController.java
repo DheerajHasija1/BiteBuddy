@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.BiteBuddy.dto.RestaurantDto;
@@ -30,21 +29,18 @@ public class RestaurantController {
     private UserService userService;
 
     @GetMapping()
-    public ResponseEntity<List<Restaurant>> searchRestaurants(@RequestHeader("Authorization") String token) throws Exception {
-        User user = userService.findUserByJwtToken(token);
+    public ResponseEntity<List<Restaurant>> getAllRestaurants() throws Exception {
         List<Restaurant> restaurant = restaurantService.getAllRestaurants();
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Restaurant> findRestaurantById(@PathVariable Long id, @RequestHeader("Authorization") String token) throws Exception {
-        User user = userService.findUserByJwtToken(token);
-
+    public ResponseEntity<Restaurant> findRestaurantById(@PathVariable Long id) throws Exception {
         Restaurant restaurant = restaurantService.findRestaurantById(id);
         return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 
-    @PutMapping("{restaurantId}/add-favorites")
+    @PutMapping("{restaurantId}/add-favorites") 
     public ResponseEntity<RestaurantDto> addToFavorites(@RequestHeader("Authorization") String token,
                                                       @PathVariable Long restaurantId) throws Exception {
         User user = userService.findUserByJwtToken(token);

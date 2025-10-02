@@ -33,6 +33,14 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+                String path = request.getRequestURI();
+                
+                 // **ADD THIS - Skip JWT validation for public endpoints**
+                if (isPublicEndpoint(path)) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
         String token = extractJwtFromRequest(request);
         
         try {
@@ -59,7 +67,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            System.out.println("JWT validation failed: " + e.getMessage()); // Debug log
+            System.out.println("JWT validation failed: " + e.getMessage());     
             SecurityContextHolder.clearContext();
         }
         
@@ -73,4 +81,19 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         }
         return null;
     }
+
+
+
+    private boolean isPublicEndpoint(String path) {
+    return path.startsWith("/restaurants") ||
+           path.startsWith("/auth/") ||
+           path.startsWith("/food") ||
+           path.startsWith("/categories/restaurant/") ||
+           path.equals("/") ||
+           path.startsWith("/static/") ||
+           path.startsWith("/css/") ||
+           path.startsWith("/js/");
 }
+}
+
+

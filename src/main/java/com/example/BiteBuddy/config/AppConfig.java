@@ -31,7 +31,10 @@ public class AppConfig {
                 // Public Auth endpoints
                 .requestMatchers("/auth/signup", "/auth/signin").permitAll()
                 .requestMatchers("/food/search").permitAll()
-                .requestMatchers("/food").permitAll()
+                .requestMatchers("/food/**").permitAll()
+                .requestMatchers("/restaurants/**").permitAll()
+                .requestMatchers("/categories/**").permitAll()
+
 
                 // .requestMatchers("/auth/refresh").permitAll()
                 
@@ -39,8 +42,8 @@ public class AppConfig {
                 .requestMatchers("/admin/**").hasAnyRole("RESTAURANT_OWNER","ADMIN")
                 
                 // Customer endpoints
-                .requestMatchers("/restaurants/**").authenticated()
-                .requestMatchers("/food/**").authenticated()
+                // .requestMatchers("/restaurants/**").authenticated()
+                // .requestMatchers("/food/**").authenticated()
                 .requestMatchers("/orders/**").authenticated()
 
                 .anyRequest().permitAll()

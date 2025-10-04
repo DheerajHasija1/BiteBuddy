@@ -165,7 +165,8 @@ public class RestaurantServiceImpl implements RestaurantService {
     public Restaurant updateRestaurantStatus(Long id) throws Exception {
         Restaurant restaurant = findRestaurantById(id);
         restaurant.setOpen(!restaurant.isOpen());
-        return restaurantRepository.save(restaurant);
+        restaurantRepository.save(restaurant);
+        return restaurant;
     }
     
 }

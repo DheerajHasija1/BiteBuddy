@@ -59,15 +59,15 @@ public class AdminRestaurantController {
     }
 
     @PutMapping("/{restaurantId}/status")
-    public ResponseEntity<String> updateRestaurantStatus(@PathVariable Long restaurantId,
+    public ResponseEntity<Restaurant> updateRestaurantStatus(@PathVariable Long restaurantId,
                                                  @RequestHeader("Authorization") String token) throws Exception {
         User user = userService.findUserByJwtToken(token);
         if(user.getRole() != USER_ROLE.ROLE_RESTAURANT_OWNER) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only restaurant owners can update restaurant status");
         }
 
-        restaurantService.updateRestaurantStatus(restaurantId);
-        return new ResponseEntity<>("Restaurant status updated successfully", HttpStatus.OK);
+        Restaurant restaurant = restaurantService.updateRestaurantStatus(restaurantId);
+        return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 
     @GetMapping("/user")

@@ -27,12 +27,11 @@ public class SellerOrderController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/restaurant/{id}")
-    public ResponseEntity<List<Order>> getOrderHistory(@PathVariable Long id,
+    @GetMapping("/restaurant/${restaurantId}")
+    public ResponseEntity<List<Order>> getOrderHistory(@PathVariable Long restaurantId,
                                                         @RequestParam(required = false) String orderStatus,
                                                         @RequestHeader("Authorization") String jwt ) throws Exception {
-        User user = userService.findUserByJwtToken(jwt);
-        List<Order> orders = orderService.getRestaurantsOrder(id, orderStatus);
+        List<Order> orders = orderService.getRestaurantsOrder(restaurantId, orderStatus);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 

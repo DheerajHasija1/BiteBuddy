@@ -27,7 +27,7 @@ public class SellerOrderController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/restaurant/${restaurantId}")
+    @GetMapping("/restaurant/{restaurantId}")
     public ResponseEntity<List<Order>> getOrderHistory(@PathVariable Long restaurantId,
                                                         @RequestParam(required = false) String orderStatus,
                                                         @RequestHeader("Authorization") String jwt ) throws Exception {

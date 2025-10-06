@@ -72,6 +72,11 @@ public class FoodServiceImpl implements FoodService {
     public List<Food> getRestaurantFoods(Long restaurantId, boolean isVeg, boolean seasonal, String foodCategory)
             throws Exception {
        List<Food> foods = foodRepository.findByRestaurantId(restaurantId);
+
+       // Filter by availability first - only show available items
+        foods = foods.stream()
+                .filter(Food::isAvailable)
+                .toList();
         
         // Filter by category first if specified
         if(foodCategory != null && !foodCategory.isEmpty()){

@@ -41,8 +41,6 @@ public class AdminFoodController {
     @DeleteMapping("/{foodId}")
     public ResponseEntity<MessageResponse> deleteFood(@PathVariable Long foodId,
                                                         @RequestHeader("Authorization") String token) throws Exception {
-        User user = userService.findUserByJwtToken(token);
-
         foodService.deleteFood(foodId);
         return new ResponseEntity<>(
             new MessageResponse("Food deleted successfully"), 

@@ -63,6 +63,12 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
+    public List<Food> getRestaurantFoods(Long restaurantId) throws Exception{
+        List<Food> foods = foodRepository.findByRestaurantId(restaurantId);
+        return foods;
+    }
+
+    @Override
     public List<Food> getRestaurantFoods(Long restaurantId, boolean isVeg, boolean seasonal, String foodCategory)
             throws Exception {
        List<Food> foods = foodRepository.findByRestaurantId(restaurantId);

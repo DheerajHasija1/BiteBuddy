@@ -1,5 +1,7 @@
 package com.example.BiteBuddy.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,8 +54,15 @@ public class AdminFoodController {
     public ResponseEntity<Food> updateFoodAvailabilityStatus(
             @PathVariable Long foodId,
             @RequestHeader("Authorization") String token) throws Exception {
-        User user = userService.findUserByJwtToken(token);
         Food food = foodService.updateAvailabilityStatus(foodId);
         return new ResponseEntity<>(food, HttpStatus.OK);
+    }
+
+    @GetMapping("/restaurant")
+    public ResponseEntity<List<Food>> getAllFoodByRestaurantId(@RequestHeader("Authorization") String token) throws Exception {
+        User user = userService.findUserByJwtToken(token);
+        Restaurant restaurant = restaurantService.getRestaurantByUserId(user.getId());
+         List<Food> foods = foodService.getRestaurantFoods(restaurant.getId());
+        return new ResponseEntity<>(foods, HttpStatus.OK);
     }
 }

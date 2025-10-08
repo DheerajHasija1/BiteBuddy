@@ -36,7 +36,7 @@ public class Food {
     private Category category;  
 
     @ManyToOne
-    @JsonIgnore
+    // @JsonIgnore
     private Restaurant restaurant;
 
     private boolean isVegetarian;

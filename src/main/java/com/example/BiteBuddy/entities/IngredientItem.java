@@ -32,6 +32,6 @@ public class IngredientItem {
     private Restaurant restaurant;
     
     @ManyToOne
-    @JsonIgnore
+    // @JsonIgnore
     private IngredientCategory category;
 }

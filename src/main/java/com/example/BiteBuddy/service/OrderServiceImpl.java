@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
     public Order createOrder(OrderRequest order, Long UserId) throws Exception {
         if (order.getRestaurantId() == null) {
         throw new Exception("Restaurant ID cannot be nullllll");
-    }
+        }
         User user = userService.findUserById(UserId);
 
         Address deliveryAddress = order.getDeliveryAddress();
